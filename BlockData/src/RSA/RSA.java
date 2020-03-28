@@ -28,7 +28,7 @@ public class RSA {
     protected final int bytesRSA, bytesHash;
     protected PublicKey   llavePublica, llavepublicaReceptor = null;
     protected PrivateKey  llavePrivada;
-    protected String MensageCifrado;
+    protected String MensageCifrado = null;
     
     /**
      * Es un objecto que se encarga de cifrar/decifrarTexto por rsa y sha con el fin de proteger los datos y frimarlos

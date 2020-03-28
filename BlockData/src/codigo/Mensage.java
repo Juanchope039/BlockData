@@ -11,8 +11,8 @@ public class Mensage extends RSA{
     private String FirmaDigital, mensage;
         
     public boolean ComprobarMensage(){
-        if (MensageCifrado.length() != 344)
-            return false;
+        //if (MensageCifrado.length() != 344)
+        //    return false;
         System.out.println(MensageCifrado);
         System.out.println(gethashMensage());
         System.out.println(getFirmaDigitalDecifrada());
@@ -34,9 +34,9 @@ public class Mensage extends RSA{
        
     public Mensage(String llavePublicaEmisor, String llaveprivadaEmisor, String llavePublicaReceptor, String Mensage) {
         super(2048, 256);
-        CargarLlaves(llavePublicaEmisor, llaveprivadaEmisor);//crear un metodo para introducir llaves por variable"publickey.pubc","privatekey.prv"
+        CargarLlaves(llavePublicaEmisor, llaveprivadaEmisor);
         setLlavepublicaReceptor(llavePublicaReceptor);
-        setMensage(Mensage);
+        mensage = Mensage;
     }
     
     public Mensage(String pub, String prv, String pubR, String msg, String FirmaDigital){
@@ -56,16 +56,18 @@ public class Mensage extends RSA{
     
     public String CifrarMensage(){
         String respuesta = "";
-        if (null == (respuesta = getMensageCifrado()))
+        if (null == (respuesta = MensageCifrado))
             respuesta = cifrarTexto(mensage);
         return respuesta;        
     }
     
     public String DecifrarMensage(){
-        String respuesta = "";
-        if(MensageCifrado == null)
-            return null;
-        return decifrarTexto(MensageCifrado);            
+        String respuesta;
+        if (null == MensageCifrado)
+            respuesta = decifrarTexto(mensage);
+        else
+            respuesta = decifrarTexto(MensageCifrado);
+        return respuesta;           
     }
     
     private String FirmarMensage(){
@@ -74,7 +76,7 @@ public class Mensage extends RSA{
         String respuesta = "";
         try {
             respuesta = cifrarfirma(hashSHA(mensage));                       
-            System.out.println("Mensage firmado correctamente.");
+            //System.out.println("Mensage firmado correctamente.");
         } catch (Exception ex) {
             System.out.println("firmado de mensage falló.\n" + ex);
         }
@@ -85,7 +87,7 @@ public class Mensage extends RSA{
         Boolean respuesta = false;
         try {
             respuesta = (decifrarfirma(Firma).equals(hashSHA(MensageCifrado)));                       
-            System.out.println("Mensage Autenticado correctamente.");
+            //System.out.println("Mensage Autenticado correctamente.");
         } catch (Exception ex) {
             System.out.println("Autenticación de mensage falló.\n" + ex);
         }
@@ -93,8 +95,11 @@ public class Mensage extends RSA{
     }
 
     public String getFirmaDigital() {
-        if (FirmaDigital == null)
+        System.out.println(FirmaDigital);
+        System.out.println(FirmaDigital.isEmpty() );
+        if (FirmaDigital.isEmpty())
             FirmaDigital = FirmarMensage();
+        System.out.println("Firma digita = " + FirmaDigital);
         return FirmaDigital;
     }
     
@@ -118,23 +123,11 @@ public class Mensage extends RSA{
 
     @Override
     public String toString() {
-        String resultado = "";
-        resultado += "Emissor: " + getLlavePublica() +
+        String resultado = "Emissor: " + getLlavePublica() +
                 "\nReceptor: " + getLlavepublicaReceptor() +
                 "\nMensage: " + (MensageCifrado != null ? CifrarMensage() : MensageCifrado ) +
                 "\nFirmaDigital: " + FirmarMensage();
         return resultado;
-    }
-
-    public boolean autenticar(){
-        try{
-            if (getFirmaDigitalDecifrada().equals(gethashMensage()))
-                return true;
-        } catch (Exception ex) {
-            System.out.println(ex.getCause().toString());
-        }
-        System.out.println("¡mensage Corrupto!");
-        return false;
     }
     
     public String hash() {
@@ -142,7 +135,6 @@ public class Mensage extends RSA{
         try {
             System.out.println(getFirmaDigitalDecifrada());
             System.out.println(gethashMensage());
-            System.out.println();
             if (!getFirmaDigitalDecifrada().equals(gethashMensage())){
                 System.out.println("¡mensage Corrupto!");
                 return null;
