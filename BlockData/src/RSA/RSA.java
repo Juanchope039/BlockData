@@ -17,6 +17,8 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -234,9 +236,14 @@ public class RSA {
         return cadena;
     }
 
-    protected String cifrarfirma(String hash) throws Exception{
-        Cipher cipher = Cipher.getInstance("rsa"); cipher.init(Cipher.ENCRYPT_MODE, llavePrivada); 
-        return codificar(cipher.doFinal(decodificar(hash)));        
+    protected String cifrarfirma(String hash){
+        try {
+            Cipher cipher = Cipher.getInstance("rsa"); cipher.init(Cipher.ENCRYPT_MODE, llavePrivada);        
+            return codificar(cipher.doFinal(decodificar(hash)));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println(ex.getCause().toString());
+        }
+        return null;
     }
     
     protected String decifrarfirma(String firmaCifrada) {

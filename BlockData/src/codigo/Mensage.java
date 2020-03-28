@@ -55,10 +55,9 @@ public class Mensage extends RSA{
     }
     
     public String CifrarMensage(){
-        String respuesta = "";
-        if (null == (respuesta = MensageCifrado))
-            respuesta = cifrarTexto(mensage);
-        return respuesta;        
+        if (null == MensageCifrado)
+            return cifrarTexto(mensage);
+        return MensageCifrado;        
     }
     
     public String DecifrarMensage(){
@@ -71,16 +70,9 @@ public class Mensage extends RSA{
     }
     
     private String FirmarMensage(){
-        if(MensageCifrado == null)
-            return null;
-        String respuesta = "";
-        try {
-            respuesta = cifrarfirma(hashSHA(mensage));                       
-            //System.out.println("Mensage firmado correctamente.");
-        } catch (Exception ex) {
-            System.out.println("firmado de mensage falló.\n" + ex);
-        }
-        return respuesta;
+        if(MensageCifrado != null)
+            return MensageCifrado;
+        return cifrarfirma(gethashMensage());
     }
     
     public Boolean AutenticarFirma(String Firma){
@@ -95,16 +87,15 @@ public class Mensage extends RSA{
     }
 
     public String getFirmaDigital() {
-        System.out.println(FirmaDigital);
-        System.out.println(FirmaDigital.isEmpty() );
-        if (FirmaDigital.isEmpty())
-            FirmaDigital = FirmarMensage();
-        System.out.println("Firma digita = " + FirmaDigital);
+        if (FirmaDigital == null)
+            return FirmarMensage();
         return FirmaDigital;
     }
     
     public String getFirmaDigitalDecifrada(){
-        String salida = getFirmaDigital();
+        String salida;
+        if ((salida = getFirmaDigital()) ==null)
+            return null;
         salida = decifrarfirma(salida);
         return salida;
     }
@@ -154,12 +145,7 @@ public class Mensage extends RSA{
     }
     
     public String gethashMensage(){
-        try {
-            return  hashSHA("".equals(CifrarMensage()) ? MensageCifrado : CifrarMensage());
-        } catch (Exception ex) {
-            System.out.println("eror M <138>");
-        }
-        return null;
+        return  hashSHA(MensageCifrado!= null ? MensageCifrado : CifrarMensage());
     }
     
     public void setFirmaDigital(String fd){
@@ -176,5 +162,11 @@ public class Mensage extends RSA{
         System.out.println(decifrarfirma(FirmaDigital));
         if (hashSHA(MensageCifrado).equals(decifrarfirma(FirmaDigital)))
             super.setMensageCifrado(MensageCifrado);
+    }
+
+    public void prueba() {
+        System.out.println("Firma: " + getFirmaDigital());
+        System.out.println("Hash mensage: "+ gethashMensage());
+        System.out.println("firma descifrada: " + getFirmaDigitalDecifrada());
     }
 }
