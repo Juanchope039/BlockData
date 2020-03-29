@@ -17,8 +17,6 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -26,11 +24,11 @@ import javax.crypto.NoSuchPaddingException;
 
 public class RSA {
     
-    protected Cipher rsa;
+    protected final Cipher rsa;
     protected final int bytesRSA, bytesHash;
-    protected PublicKey   llavePublica, llavepublicaReceptor = null;
-    protected PrivateKey  llavePrivada;
-    protected String MensageCifrado = null;
+    protected final PublicKey   llavePublica, llavepublicaReceptor;
+    protected final PrivateKey  llavePrivada;
+    protected final String MensageCifrado ;
     
     /**
      * Es un objecto que se encarga de cifrar/decifrarTexto por rsa y sha con el fin de proteger los datos y frimarlos

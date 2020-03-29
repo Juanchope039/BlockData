@@ -6,9 +6,9 @@ import java.util.Scanner;
  *
  * @author Juanchope
  */
-public class Mensage extends RSA{
+public final class Mensage extends RSA{
     
-    private String FirmaDigital, mensage;
+    final private String FirmaDigital, mensage;
         
     public boolean ComprobarMensage(){
         //if (MensageCifrado.length() != 344)
@@ -39,14 +39,15 @@ public class Mensage extends RSA{
         mensage = Mensage;
     }
     
-    public Mensage(String pub, String prv, String pubR, String msg, String FirmaDigital){
+    public Mensage(String pub, String pubR, String msg, String FirmaDigital, String hashAnterior){
         super(2048, 256);
-        CargarLlaves(pub, prv);//crear un metodo para introducir llaves por variable"publickey.pubc","privatekey.prv"
+        setLlavePublicaEmisor(pub);
         setLlavepublicaReceptor(pubR);
-        if (hashSHA(msg).equals(decifrarfirma(this.FirmaDigital))){
+        this.FirmaDigital = FirmaDigital;
+        if (hashSHA(msg).equals(decifrarfirma(this.FirmaDigital)))
             MensageCifrado = msg;
-            this.FirmaDigital = FirmaDigital;
-        }
+        else
+            System.out.println("Mensage Corrupto.");
     }
     
     public Mensage() {
@@ -93,11 +94,9 @@ public class Mensage extends RSA{
     }
     
     public String getFirmaDigitalDecifrada(){
-        String salida;
-        if ((salida = getFirmaDigital()) ==null)
+        if (getFirmaDigital() ==null)
             return null;
-        salida = decifrarfirma(salida);
-        return salida;
+        return decifrarfirma(getFirmaDigital());
     }
 
     public void setMensage(String Mensage) {
@@ -165,7 +164,10 @@ public class Mensage extends RSA{
     }
 
     public void prueba() {
-        System.out.println("Firma: " + getFirmaDigital());
+        System.out.println("Mensage: " + getMensageCifrado());
+        System.out.println("hash del mensage: " + gethashMensage());
+        System.out.println("hash del mensage: " + hashSHA(CifrarMensage()));
+        System.out.println("hash del mensage: " + hashSHA(cifrarTexto(mensage)));
         System.out.println("Hash mensage: "+ gethashMensage());
         System.out.println("firma descifrada: " + getFirmaDigitalDecifrada());
     }
