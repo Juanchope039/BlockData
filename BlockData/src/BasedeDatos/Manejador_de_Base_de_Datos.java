@@ -4,17 +4,18 @@ import codigo.Mensage;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
+import javax.sound.midi.Soundbank;
 
 /**
  *
  * @author Juanchope
  */
 public class Manejador_de_Base_de_Datos {
-    
+        
     private static final String bd = "pruebarsa", localizacionxampp = "jdbc:mysql://localhost/";
     private static final Conexion con = new Conexion("root", "", "com.mysql.jdbc.Driver", localizacionxampp + bd);
-    
     private static void Consulta(Connection con,String Consulta,String... parametros){
         try{
             PreparedStatement consulta;
@@ -40,11 +41,7 @@ public class Manejador_de_Base_de_Datos {
                 consulta.setString(1, parametro);
             ResultSet r = consulta.executeQuery();
             while(r.next()){
-                Mensage msg = new Mensage();
-                msg.setLlavePublicaEmisor(r.getString(1));
-                msg.setLlavepublicaReceptor(r.getString(2));
-                msg.setMensage(r.getString(3));
-                msg.setFirmaDigital(r.getString(4));
+                Mensage msg = new Mensage(r.getString(1),  r.getString(2), r.getString(3), r.getString(4), "0");
                 resultado.add(msg);
             }
             System.out.println("Consulta exitosa.");
@@ -58,9 +55,9 @@ public class Manejador_de_Base_de_Datos {
         con.Conectar();
         String consulta="INSERT INTO `mensaje` (`llave publica emisor`, `llave publica receptor`, `mensaje cifrado`, `firma digital`) VALUES (?, ?, ?, ?)", //, `Fecha`, ?
                 parametros[] = {pube, pubr, msg, firmadigital};
-        Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);
+        Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);    
     }
-    
+    /*
     public static void enviarmensage(Mensage msg){
         con.Conectar();
         String consulta="INSERT INTO `mensaje` (`llave publica emisor`, `llave publica receptor`, `mensaje cifrado`, `firma digital`, `HashActual`) VALUES (?, ?, ?, ?, ?)", //, `Fecha`, ?
@@ -69,7 +66,7 @@ public class Manejador_de_Base_de_Datos {
                     msg.CifrarMensage(), msg.getFirmaDigital(), msg.hash()};
         Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);
     }
-
+*/
     public static ArrayList<Mensage> recibirmensage(String direccion) {
         con.Conectar();
         String consulta = "SELECT * FROM `mensaje` ";

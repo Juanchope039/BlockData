@@ -17,6 +17,8 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
@@ -24,11 +26,9 @@ import javax.crypto.NoSuchPaddingException;
 
 public class RSA {
     
-    protected final Cipher rsa;
+    protected  Cipher rsa;
     protected final int bytesRSA, bytesHash;
-    protected final PublicKey   llavePublica, llavepublicaReceptor;
-    protected final PrivateKey  llavePrivada;
-    protected final String MensageCifrado ;
+    protected  /*final*/String MensageCifrado ;
     
     /**
      * Es un objecto que se encarga de cifrar/decifrarTexto por rsa y sha con el fin de proteger los datos y frimarlos
@@ -38,7 +38,7 @@ public class RSA {
     
     public RSA(int bytesRSA, int bytesHash) {
         this.bytesRSA = bytesRSA;
-        this.bytesHash = bytesHash;
+        this.bytesHash = bytesHash;        
     }
 
     public static void main(String[] args) throws  Exception {
@@ -47,12 +47,12 @@ public class RSA {
 
     private static void generarprubaBasica() throws Exception{
         
-        RSA pruebarsa = new RSA(2048, 256);//2048,512
+ /*       RSA pruebarsa = new RSA(2048, 256);//2048,512
         pruebarsa.CargarLlavesSRC("publickey.pubc","privatekey.prv");
-        pruebarsa.setLlavepublicaReceptor("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAieokV9uraadtG0/iSGVXGgyTbqh3wWoh91JfQbxeijNUHsmgv7uxWTL017Szm8qFXT12loagsX52AVQDl7vWO0WCZtKQSe7ZHN17FpYSdKOR6LHRQC20MmcdeXzAViXJ3u7xP9dd0vtm6n5kSVvHIvNQ0RfPCkyqiLKVnB9OYOSU+Kw+f11/jE6BoWA/t7C5MRlJKvqatbS3zRnGDanteR8iMYM8XmPe8P79/2RKPkh5EGI7RENJe6fu1epTTWrzNKlA4uuZw87WUfBmh4u0JNvIGQXquWRImkURHuPDakynoQIqLrdLRgBXp9Uln+WD3Ay4WdulY17obVvicd1O6wIDAQAB");
+          pruebarsa.setLlavepublicaReceptor("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAieokV9uraadtG0/iSGVXGgyTbqh3wWoh91JfQbxeijNUHsmgv7uxWTL017Szm8qFXT12loagsX52AVQDl7vWO0WCZtKQSe7ZHN17FpYSdKOR6LHRQC20MmcdeXzAViXJ3u7xP9dd0vtm6n5kSVvHIvNQ0RfPCkyqiLKVnB9OYOSU+Kw+f11/jE6BoWA/t7C5MRlJKvqatbS3zRnGDanteR8iMYM8XmPe8P79/2RKPkh5EGI7RENJe6fu1epTTWrzNKlA4uuZw87WUfBmh4u0JNvIGQXquWRImkURHuPDakynoQIqLrdLRgBXp9Uln+WD3Ay4WdulY17obVvicd1O6wIDAQAB");
                 
         //mostrar llaves
-        System.out.println("Llave Publica: -----> " + pruebarsa.getLlavePublica());
+      System.out.println("Llave Publica: -----> " + pruebarsa.getLlavePublica());
         System.out.println("Llave Privada: -----> " + pruebarsa.getLlavePrivada());
         System.out.println("Llave Publica Receptor: -----> " + pruebarsa.getLlavepublicaReceptor());
         
@@ -61,12 +61,12 @@ public class RSA {
         System.out.println("texto a cifrar: -----> " + text);
         
         // cifrando texto
-        String textocifrado = pruebarsa.cifrarTexto(text),
-                Textocifrado2 = pruebarsa.cifrarReceptor(text);
+        //String textocifrado = pruebarsa.Cifrar(text),
+        //        Textocifrado2 = pruebarsa.cifrarReceptor(text);
 
         // Escribimos el encriptado para verlo, con caracteres visibles
-        System.out.println("Texto Cifrado: -----> " + textocifrado);
-        System.out.println("Texto Cifrado para receptor: -----> " + Textocifrado2);
+        //System.out.println("Texto Cifrado: -----> " + textocifrado);
+        //System.out.println("Texto Cifrado para receptor: -----> " + Textocifrado2);
         
         // Se descifra
         //String textoDecifrado = pruebarsa.decifrarTexto(textocifrado);
@@ -75,33 +75,33 @@ public class RSA {
         //System.out.println("texto decifrado: -----> " + textoDecifrado);
         
         //has del texto
-        String hashdelMensage = pruebarsa.hashSHA(textocifrado),
-                hashdelMensage2 = pruebarsa.hashSHA(Textocifrado2);//512-bytes
+        //String hashdelMensage = pruebarsa.hashSHA(textocifrado),
+        //        hashdelMensage2 = pruebarsa.hashSHA(Textocifrado2);//512-bytes
         
         // mostrar hash del texto cifrado
-        System.out.println("hash del texto cifrado: -----> " + hashdelMensage);
-        System.out.println("hash del texto cifrado para receptor: -----> " + hashdelMensage2);
+        //System.out.println("hash del texto cifrado: -----> " + hashdelMensage);
+        //System.out.println("hash del texto cifrado para receptor: -----> " + hashdelMensage2);
         
         //generando hash
-        String firmaDigital = pruebarsa.cifrarfirma(hashdelMensage),
-                firmaDigital2 = pruebarsa.cifrarfirma(hashdelMensage2);//Base64.getEncoder().encodeToString(firmaCifrada);
+        //String firmaDigital = pruebarsa.cifrarfirma(hashdelMensage),
+        //        firmaDigital2 = pruebarsa.cifrarfirma(hashdelMensage2);//Base64.getEncoder().encodeToString(firmaCifrada);
         
         //mostrando hash
-        System.out.println( "firma digital: -----> " + firmaDigital);
-        System.out.println( "firma digital receptor: -----> " + firmaDigital2);
+        //System.out.println( "firma digital: -----> " + firmaDigital);
+        //System.out.println( "firma digital receptor: -----> " + firmaDigital2);
         
         //decifrando firma digital
-        String firmadecifrada = pruebarsa.decifrarfirma(firmaDigital ),
-                firmadecifrada2 = pruebarsa.decifrarfirma(firmaDigital2);
+        //String firmadecifrada = pruebarsa.decifrarfirma(firmaDigital ),
+        //        firmadecifrada2 = pruebarsa.decifrarfirma(firmaDigital2);
         
         //amostrando firma decifrada
-        System.out.println("autenticacion por llave publica : -----> " + firmadecifrada);
-        System.out.println("autenticacion por llave publica receptor: -----> " + firmadecifrada2);
+        //System.out.println("autenticacion por llave publica : -----> " + firmadecifrada);
+        //System.out.println("autenticacion por llave publica receptor: -----> " + firmadecifrada2);
         
         //autenticando firma
-        System.out.println("-----> " + (hashdelMensage.equals(firmadecifrada)? "firma autenticada" : "Erro Firma corrupta"));
-        System.out.println("-----> " + (hashdelMensage2.equals(firmadecifrada2)? "firma autenticada" : "Erro Firma corrupta"));
-    }
+        //System.out.println("-----> " + (hashdelMensage.equals(firmadecifrada)? "firma autenticada" : "Erro Firma corrupta"));
+        //System.out.println("-----> " + (hashdelMensage2.equals(firmadecifrada2)? "firma autenticada" : "Erro Firma corrupta"));
+*/    }
 
     private KeyPair generarPardeLLaves() throws Exception{
         KeyPairGenerator pardeLlaves = KeyPairGenerator.getInstance("RSA");
@@ -135,7 +135,7 @@ public class RSA {
         PrivateKey keyFromBytes = keyFactory.generatePrivate(keySpec);
         return keyFromBytes;
     }
-
+/*
     protected String decifrarTexto(String textocifrado){
         String salida = "";
         try {
@@ -148,8 +148,8 @@ public class RSA {
             System.out.println(ex.getCause().toString());
         }
         return salida;
-    }
-
+    }*/
+/*
     protected String cifrarTexto(String text){
         String salida= "";
         try {
@@ -160,45 +160,63 @@ public class RSA {
             System.out.println(ex.getCause().toString());
         }
         return salida;
-    }
-    
+    }*/
+    /*
     private  String cifrarReceptor(String text) throws Exception{
         rsa = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");//"RSA/ECB/PKCS1Padding"
         rsa.init(Cipher.ENCRYPT_MODE, llavepublicaReceptor);
         return codificar(rsa.doFinal(text.getBytes()));
-    }
+    }*/
     
-    protected void CargarLLavePublicaEmissor(String llave){
+    public PublicKey Cargarpub(String llave){
         try {
             KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
             KeySpec llaveSpec = new X509EncodedKeySpec(decodificar(llave));
-            llavePublica = fabricarLlave.generatePublic(llaveSpec);
+            return fabricarLlave.generatePublic(llaveSpec);
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             if (("java.security.InvalidKeyException: IOException: Short read of DER length").equals(ex.getCause().toString()))
                 System.out.println("llave demasiado corta.");
             else
                 System.out.println("Guardar llave publica del receptor falló.\n" + ex.getCause().toString());
         }
+        return null;
     }
-
-    private  KeyPair CargardeLLaves(String llavepublica, String llaveprivada){
-        KeyPair pardeLlaves = null;
+    /*
+    public PrivateKey Cargarprv(String llave){
         try {
-            byte[] bytes1 = llavepublica.getBytes(),
-                    bytes2 = llaveprivada.getBytes();
-            System.out.println(new String(bytes1));
+            KeyPair pardeLlaves;
+            byte[] bytesprv = llave.getBytes();
             KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
-            KeySpec llaveSpec = new X509EncodedKeySpec(bytes1);
-            PublicKey llpub = fabricarLlave.generatePublic(llaveSpec);
-            fabricarLlave = KeyFactory.getInstance("RSA");
-            llaveSpec = new PKCS8EncodedKeySpec(bytes2);
-            PrivateKey llpriv = fabricarLlave.generatePrivate(llaveSpec);
-            pardeLlaves = new KeyPair(llpub, llpriv);
-            System.out.println("Extración de llaves exitosa");
+            KeySpec llaveSpec = new PKCS8EncodedKeySpec(bytesprv);
+            PrivateKey prv = fabricarLlave.generatePrivate(llaveSpec);
+            return prv;
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            System.out.println("Extraer llaves Falló.");
+            System.out.println("Crgarprv llave falló"+ex);
         }
-        return pardeLlaves;
+        return null;
+    }
+*/
+    public KeyPair CargardeLLaves(String pub, String prv){
+        KeyPair pardeLlaves;
+        try {
+            byte[] bytespub = pub.getBytes(),
+                    bytesprv = prv.getBytes();
+            
+            //System.out.println(new String(bytespub));
+            
+            KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
+            KeySpec llaveSpec = new X509EncodedKeySpec(bytespub);
+            PublicKey llpub = fabricarLlave.generatePublic(llaveSpec);
+            
+            fabricarLlave = KeyFactory.getInstance("RSA");
+            llaveSpec = new PKCS8EncodedKeySpec(bytesprv);
+            PrivateKey llpriv = fabricarLlave.generatePrivate(llaveSpec);
+            
+            return pardeLlaves = new KeyPair(llpub, llpriv);
+        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
+            System.out.println("Cargar llaves Falló." + ex);
+        }
+        return null;
     }
 
     private  byte[] cargarArchivoConvertidoaBytes(String nombredelArchivo)throws Exception{
@@ -233,7 +251,30 @@ public class RSA {
         byte[] cadena = decodificar(hashdelMensage);
         return cadena;
     }
-
+    
+    public String Cifrar(String texto, Key llave){
+        try {
+            Cipher cipher2 = Cipher.getInstance("rsa");
+            cipher2.init(Cipher.DECRYPT_MODE, llave);
+            return codificar(cipher2.doFinal(decodificar(texto)));//control(firmaCifrada)
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println(ex.getCause().toString());
+        }
+        return null;
+    }
+    
+    public String Decifrar(String texto, Key llave){
+        try {
+            Cipher cipher = Cipher.getInstance("rsa"); cipher.init(Cipher.ENCRYPT_MODE, llave);        
+            return codificar(cipher.doFinal(decodificar(texto)));//decodificar(hash)
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println(ex.getCause().toString());
+        }
+        return null;
+    }
+    
+    
+/*
     protected String cifrarfirma(String hash){
         try {
             Cipher cipher = Cipher.getInstance("rsa"); cipher.init(Cipher.ENCRYPT_MODE, llavePrivada);        
@@ -242,8 +283,8 @@ public class RSA {
             System.out.println(ex.getCause().toString());
         }
         return null;
-    }
-    
+    }*/
+    /*
     protected String decifrarfirma(String firmaCifrada) {
         try {
             Cipher cipher2 = Cipher.getInstance("rsa");
@@ -253,33 +294,33 @@ public class RSA {
             System.out.println(ex.getCause().toString());
         }
         return null;
-    }
+    }*/
 
     private void CargarLlavesSRC(String srcpubc, String srcprv) {
         try {
-            llavePublica = importarLlavePublica(srcpubc);
-            llavePrivada = importarLlavePrivada(srcprv);
+//            llavePublica = importarLlavePublica(srcpubc);
+//            llavePrivada = importarLlavePrivada(srcprv);
             System.out.println("llaves rescatadas correctamente.");
         } catch (Exception e) {
             System.out.println("falló rescate de llaves.");
         }
         
-        if (llavePublica == null | llavePrivada == null){
+//        if (llavePublica == null | llavePrivada == null){
             try {
                 System.out.println("Generando par de llaves.");
                 KeyPair pardeLLaves ;
                 pardeLLaves = generarPardeLLaves();
                 System.out.println("Obteniendo par de llaves");
-                llavePublica = pardeLLaves.getPublic();
-                llavePrivada = pardeLLaves.getPrivate();
+//                llavePublica = pardeLLaves.getPublic();
+//                llavePrivada = pardeLLaves.getPrivate();
                 
                 System.out.println("Guardando par de llaves.");
-                exportarLlave(llavePublica, srcpubc);
-                exportarLlave(llavePrivada, srcprv);
+//                exportarLlave(llavePublica, srcpubc);
+//                exportarLlave(llavePrivada, srcprv);
             } catch (Exception ex) {
                 System.out.println("Guardado de llaves falló.");
             }
-        }
+//        }
     }
     
     /**
@@ -289,7 +330,7 @@ public class RSA {
  * 
  * 
  */
-
+/*
     public void CargarLlaves(String pub, String prv) {
         try {
             byte[] bytes1 = decodificar(pub),
@@ -310,34 +351,23 @@ public class RSA {
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
             System.out.println("Extraer llaves Falló.<266-R>\n" + ex.getCause().toString());
         }        
-    }
+    }*/
     
-    protected void generarLlaves(){
+    private KeyPair generarLlaves(){
         try {
             KeyPair pardeLLaves ;
             pardeLLaves = generarPardeLLaves();
-            KeyPair LLave;
-            LLave = generarPardeLLaves();
-            
-            llavePublica = pardeLLaves.getPublic();
-            llavePrivada = pardeLLaves.getPrivate();
-            llavepublicaReceptor = pardeLLaves.getPublic();
-            
+//            llavePublica = pardeLLaves.getPublic();
+//            llavePrivada = pardeLLaves.getPrivate();
+            return pardeLLaves;   
         } catch (Exception ex) {
             System.out.println("Guardado de llaves falló.\n" + ex.getCause().toString());
-        }        
-    }
-    
-    public String getLlavePublica() {
-        return codificar(llavePublica.getEncoded());
+        }   
+        return null;
     }
 
-    public String getLlavePrivada() {
-        return codificar(llavePrivada.getEncoded());
-    }
-
-    public String getLlavepublicaReceptor() {
-        return codificar(llavepublicaReceptor.getEncoded());
+    public String getLlave(Key llave) {
+        return codificar(llave.getEncoded());
     }
 
     protected String getMensageCifrado() {
@@ -348,7 +378,7 @@ public class RSA {
         if (MensageCifrado.length() ==344)
             this.MensageCifrado = MensageCifrado;
     }
-
+/*
     public void setLlavepublicaReceptor(String pub) {
         try {
             KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
@@ -360,5 +390,5 @@ public class RSA {
             else
                 System.out.println(ex.getCause().toString());
         }
-    }
+    }*/
 }
