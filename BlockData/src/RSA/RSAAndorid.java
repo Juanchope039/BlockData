@@ -38,9 +38,10 @@ public class RSAAndorid {
     private static void generarprubaBasica() throws Exception{
         //Crear una instancia rsa
         RSAAndorid rsa1 = new RSAAndorid();
-
         // Generar el par de claves
         System.out.println(rsa1.generarPardeLLaves()? "Par de lave generadas correctamente": "Par de llaves no se generaron");
+
+        rsa1.generarPardeLLaves(rsa1.getllavePublica(), rsa1.getllavePrivada());
         
         System.out.println("Llave Publica -> " + rsa1.getllavePublica());
         System.out.println("Llave Privada -> " + rsa1.getllavePrivada());
@@ -84,18 +85,15 @@ public class RSAAndorid {
         return false;
     }
     
-    private boolean generarPardeLLaves(String llavepublica, String llaveprivada){
+    public boolean generarPardeLLaves(String llavepublica, String llaveprivada){
         try {
-            byte[] bytes1 = llavepublica.getBytes(),
-                    bytes2 = llaveprivada.getBytes();
             
-            System.out.println(new String(bytes1));
             KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
-            KeySpec llaveSpec = new X509EncodedKeySpec(bytes1);
+            KeySpec llaveSpec = new X509EncodedKeySpec(decodificar(llavepublica));
             llavePublica = fabricarLlave.generatePublic(llaveSpec);
             
             fabricarLlave = KeyFactory.getInstance("RSA");
-            llaveSpec = new PKCS8EncodedKeySpec(bytes2);
+            llaveSpec = new PKCS8EncodedKeySpec(decodificar(llaveprivada));
             llavePrivada = fabricarLlave.generatePrivate(llaveSpec);
             
             return true;
@@ -188,7 +186,8 @@ public class RSAAndorid {
     public String firmaDigital(String hash) {
         try {
             byte[] unicode = decodificar(hash);
-            Cipher cipher = Cipher.getInstance("rsa"); cipher.init(Cipher.ENCRYPT_MODE, llavePrivada);
+            Cipher cipher = Cipher.getInstance("rsa"); 
+            cipher.init(Cipher.ENCRYPT_MODE, llavePrivada);
             unicode = cipher.doFinal(unicode);        
             return codificar(unicode);
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {

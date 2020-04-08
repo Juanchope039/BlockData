@@ -65,7 +65,7 @@ public final class Mensage{
     }
     
     private String CifrarMensage(){
-            return rsa.Cifrar(mensage,llavePublicaR);     
+        return rsa.Cifrar(mensage,llavePublicaR);     
     }
     
     private String DecifrarMensage(){
@@ -73,11 +73,11 @@ public final class Mensage{
     }
     
     private String FirmarMensage(){
-        return rsa.Decifrar(gethashMensage(),llavePrivadaE);
+        return rsa.firmaDigital(mensageCifrado, llavePrivadaE);
     }
     
     private String DecifrarFirma(){
-        return rsa.Cifrar(getFirmaDigital(),llavePublicaE);
+        return rsa.decifrarfirmaDigital(FirmaDigital, llavePublicaE);
     }
     
     public Boolean AutenticarFirma(String Firma){
@@ -115,7 +115,7 @@ public final class Mensage{
     }
     
     public String gethashMensage(){
-        return  rsa.hashSHA(CifrarMensage());
+        return  rsa.hashSHA(mensageCifrado);
     }
     
     public String getMensage(){
@@ -123,18 +123,19 @@ public final class Mensage{
     }
 
     public void prueba() {
-        System.out.println("Mensage: " + mensageCifrado);
-        System.out.println("hash del mensage: " + gethashMensage());
-        System.out.println("hash del mensage: " + rsa.hashSHA(CifrarMensage()));
-        System.out.println("hash del mensage: " + rsa.hashSHA(rsa.Cifrar(mensage,llavePublicaE)));
-        System.out.println("Hash mensage: "+ gethashMensage());
-        System.out.println("firma descifrada: " + getFirmaDigitalDecifrada());
+        System.out.println("Mensage             : " + mensageCifrado);
+        System.out.println("Firma del mensage   : " + getFirmaDigital());
+        System.out.println("hash del mensage    : " + gethashMensage());
+        System.out.println("firma descifrada    : " + getFirmaDigitalDecifrada());
     }
 
     private void CargarLlavesE(String pubE, String prvE) {
         KeyPair kp = rsa.CargardeLLaves(pubE, prvE);
-        llavePublicaE = kp.getPublic();
-        llavePrivadaE = kp.getPrivate();
+        if (kp != null){
+            llavePublicaE = kp.getPublic();
+            llavePrivadaE = kp.getPrivate();
+        }else
+            System.out.println("Error al generar llaves");
     }
 
     private void CargarLlavepubR(String pubR) {

@@ -103,11 +103,16 @@ public class RSA {
         //System.out.println("-----> " + (hashdelMensage2.equals(firmadecifrada2)? "firma autenticada" : "Erro Firma corrupta"));
 */    }
 
-    private KeyPair generarPardeLLaves() throws Exception{
-        KeyPairGenerator pardeLlaves = KeyPairGenerator.getInstance("RSA");
-        pardeLlaves.initialize(bytesRSA);
-        KeyPair keyPair = pardeLlaves.generateKeyPair();        
-        return keyPair;
+    public KeyPair generarPardeLLaves(){
+        try {
+            KeyPairGenerator pardeLlaves = KeyPairGenerator.getInstance("RSA");
+            pardeLlaves.initialize(bytesRSA);
+            KeyPair keyPair = pardeLlaves.generateKeyPair();
+            return keyPair;
+        } catch (NoSuchAlgorithmException ex) {
+            System.out.println("Error. " + ex.getCause().toString());
+        }
+        return null;
     }
 
     private  void exportarLlave(Key Llave, String nombredeArchivo) {
@@ -181,40 +186,21 @@ public class RSA {
         }
         return null;
     }
-    /*
-    public PrivateKey Cargarprv(String llave){
-        try {
-            KeyPair pardeLlaves;
-            byte[] bytesprv = llave.getBytes();
-            KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
-            KeySpec llaveSpec = new PKCS8EncodedKeySpec(bytesprv);
-            PrivateKey prv = fabricarLlave.generatePrivate(llaveSpec);
-            return prv;
-        } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            System.out.println("Crgarprv llave falló"+ex);
-        }
-        return null;
-    }
-*/
+    
     public KeyPair CargardeLLaves(String pub, String prv){
-        KeyPair pardeLlaves;
         try {
-            byte[] bytespub = pub.getBytes(),
-                    bytesprv = prv.getBytes();
-            
-            //System.out.println(new String(bytespub));
-            
             KeyFactory fabricarLlave = KeyFactory.getInstance("RSA");
-            KeySpec llaveSpec = new X509EncodedKeySpec(bytespub);
+            KeySpec llaveSpec = new X509EncodedKeySpec(decodificar(pub));
             PublicKey llpub = fabricarLlave.generatePublic(llaveSpec);
             
             fabricarLlave = KeyFactory.getInstance("RSA");
-            llaveSpec = new PKCS8EncodedKeySpec(bytesprv);
+            llaveSpec = new PKCS8EncodedKeySpec(decodificar(prv));
             PrivateKey llpriv = fabricarLlave.generatePrivate(llaveSpec);
             
-            return pardeLlaves = new KeyPair(llpub, llpriv);
+            return new KeyPair(llpub, llpriv);
+            
         } catch (NoSuchAlgorithmException | InvalidKeySpecException ex) {
-            System.out.println("Cargar llaves Falló." + ex);
+            System.out.println("Error al cargarllaves. " + ex.getCause().toString());
         }
         return null;
     }
@@ -252,7 +238,47 @@ public class RSA {
         return cadena;
     }
     
+    public String firmaDigital(String texto, PrivateKey llave) {
+        String hash = hashSHA(texto);
+        try {
+            byte[] unicode = decodificar(hash);
+            Cipher cipher = Cipher.getInstance("rsa"); 
+            cipher.init(Cipher.ENCRYPT_MODE, llave);
+            unicode = cipher.doFinal(unicode);        
+            return codificar(unicode);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println("Error al firmar mensage. " + ex.getCause().toString());
+        }
+        return null;
+    }
+    
+    public String decifrarfirmaDigital(String hashFirmado, PublicKey llave) {
+        try {
+            byte[] unicode = decodificar(hashFirmado);
+            Cipher cipher2 = Cipher.getInstance("rsa");
+            cipher2.init(Cipher.DECRYPT_MODE, llave);
+            unicode = cipher2.doFinal(unicode);
+            return codificar(unicode);
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println("Error al decifrarfirmar mensage. " + ex.getCause().toString());
+        }
+        return null;
+    }
+    
     public String Cifrar(String texto, Key llave){
+        try {
+            byte[] unicode = texto.getBytes();
+            
+            Cipher rsa2 = Cipher.getInstance("RSA/ECB/OAEPWithSHA1AndMGF1Padding");//"RSA/ECB/PKCS1Padding"
+            rsa2.init(Cipher.ENCRYPT_MODE, llave);
+            return codificar(rsa2.doFinal(unicode));
+        } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
+            System.out.println("error al cifrar. " + ex.getCause().toString());
+        }
+        return null;
+        
+        /*
+        
         try {
             Cipher cipher2 = Cipher.getInstance("rsa");
             cipher2.init(Cipher.DECRYPT_MODE, llave);
@@ -260,7 +286,7 @@ public class RSA {
         } catch (NoSuchAlgorithmException | NoSuchPaddingException | InvalidKeyException | IllegalBlockSizeException | BadPaddingException ex) {
             System.out.println(ex.getCause().toString());
         }
-        return null;
+        return null;*/
     }
     
     public String Decifrar(String texto, Key llave){
