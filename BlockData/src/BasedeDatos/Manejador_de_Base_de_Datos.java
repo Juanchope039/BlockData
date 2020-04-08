@@ -51,10 +51,13 @@ public class Manejador_de_Base_de_Datos {
         return (resultado.isEmpty() ? null : resultado);
     }
     
-    public static void enviarmensage(String pube, String pubr, String msg, String firmadigital){
+    public static void enviarmensage(Mensage msg){
         con.Conectar();
         String consulta="INSERT INTO `mensaje` (`llave publica emisor`, `llave publica receptor`, `mensaje cifrado`, `firma digital`) VALUES (?, ?, ?, ?)", //, `Fecha`, ?
-                parametros[] = {pube, pubr, msg, firmadigital};
+                parametros[] = {msg.getLlavePublicaEmissor(),
+                    msg.getLlavepublicaReceptor(),
+                    msg.getMensageCifrado(),
+                    msg.getFirmaDigital()};
         Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);    
     }
     /*
