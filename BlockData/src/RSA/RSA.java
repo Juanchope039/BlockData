@@ -2,6 +2,7 @@ package RSA;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.Serializable;
 import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
@@ -17,14 +18,12 @@ import java.security.spec.KeySpec;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
-public class RSA {
+public class RSA implements Serializable{
     
     protected  Cipher rsa;
     protected final int bytesRSA, bytesHash;
@@ -47,7 +46,7 @@ public class RSA {
 
     private static void generarprubaBasica() throws Exception{
         
- /*       RSA pruebarsa = new RSA(2048, 256);//2048,512
+ /*      RSA pruebarsa = new RSA(2048, 256);//2048,512
         pruebarsa.CargarLlavesSRC("publickey.pubc","privatekey.prv");
           pruebarsa.setLlavepublicaReceptor("MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAieokV9uraadtG0/iSGVXGgyTbqh3wWoh91JfQbxeijNUHsmgv7uxWTL017Szm8qFXT12loagsX52AVQDl7vWO0WCZtKQSe7ZHN17FpYSdKOR6LHRQC20MmcdeXzAViXJ3u7xP9dd0vtm6n5kSVvHIvNQ0RfPCkyqiLKVnB9OYOSU+Kw+f11/jE6BoWA/t7C5MRlJKvqatbS3zRnGDanteR8iMYM8XmPe8P79/2RKPkh5EGI7RENJe6fu1epTTWrzNKlA4uuZw87WUfBmh4u0JNvIGQXquWRImkURHuPDakynoQIqLrdLRgBXp9Uln+WD3Ay4WdulY17obVvicd1O6wIDAQAB");
                 

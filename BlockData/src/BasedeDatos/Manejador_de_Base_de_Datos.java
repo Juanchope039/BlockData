@@ -1,6 +1,6 @@
 package BasedeDatos;
 
-import codigo.Mensage;
+import codigo.Mensaje;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -33,15 +33,15 @@ public class Manejador_de_Base_de_Datos {
         }
     }
     
-    private static ArrayList<Mensage> recibirMensage(Connection con,String Consulta,String parametro){
-        ArrayList<Mensage> resultado =new ArrayList<>();
+    private static ArrayList<Mensaje> recibirMensage(Connection con,String Consulta,String parametro){
+        ArrayList<Mensaje> resultado =new ArrayList<>();
         try{
             PreparedStatement consulta = con.prepareStatement(Consulta );
             if (!parametro.equals("*"))
                 consulta.setString(1, parametro);
             ResultSet r = consulta.executeQuery();
             while(r.next()){
-                Mensage msg = new Mensage(r.getString(1),  r.getString(2), r.getString(3), r.getString(4), "0");
+                Mensaje msg = new Mensaje(r.getString(1),  r.getString(2), r.getString(3), r.getString(4), "0");
                 resultado.add(msg);
             }
             System.out.println("Consulta exitosa.");
@@ -51,7 +51,7 @@ public class Manejador_de_Base_de_Datos {
         return (resultado.isEmpty() ? null : resultado);
     }
     
-    public static void enviarmensage(Mensage msg){
+    public static void enviarmensage(Mensaje msg){
         con.Conectar();
         String consulta="INSERT INTO `mensaje` (`llave publica emisor`, `llave publica receptor`, `mensaje cifrado`, `firma digital`) VALUES (?, ?, ?, ?)", //, `Fecha`, ?
                 parametros[] = {msg.getLlavePublicaEmissor(),
@@ -61,7 +61,7 @@ public class Manejador_de_Base_de_Datos {
         Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);    
     }
     /*
-    public static void enviarmensage(Mensage msg){
+    public static void enviarmensage(Mensaje msg){
         con.Conectar();
         String consulta="INSERT INTO `mensaje` (`llave publica emisor`, `llave publica receptor`, `mensaje cifrado`, `firma digital`, `HashActual`) VALUES (?, ?, ?, ?, ?)", //, `Fecha`, ?
                 parametros[] = {msg.getLlavePublica(), 
@@ -70,7 +70,7 @@ public class Manejador_de_Base_de_Datos {
         Manejador_de_Base_de_Datos.Consulta(con.getConexion(), consulta, parametros);
     }
 */
-    public static ArrayList<Mensage> recibirmensage(String direccion) {
+    public static ArrayList<Mensaje> recibirmensage(String direccion) {
         con.Conectar();
         String consulta = "SELECT * FROM `mensaje` ";
         if (!"*".equals(direccion))
