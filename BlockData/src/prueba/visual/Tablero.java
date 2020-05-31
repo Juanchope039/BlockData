@@ -51,6 +51,7 @@ public class Tablero extends javax.swing.JFrame {
         jbtn_verLlaves = new javax.swing.JButton();
         jbtn_verRegistros = new javax.swing.JButton();
         jbtn_borrarContenido = new javax.swing.JButton();
+        jbtn_borrarContenido1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("BlockData");
@@ -185,6 +186,13 @@ public class Tablero extends javax.swing.JFrame {
             }
         });
 
+        jbtn_borrarContenido1.setText("Simulacion de chat");
+        jbtn_borrarContenido1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jbtn_simulacionDeChatActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -226,7 +234,10 @@ public class Tablero extends javax.swing.JFrame {
                                 .addGap(18, 18, 18)
                                 .addComponent(jbtn_verRegistros)
                                 .addGap(18, 18, 18)
-                                .addComponent(jbtn_borrarContenido)))
+                                .addComponent(jbtn_borrarContenido))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jbtn_borrarContenido1)
+                                .addGap(165, 165, 165)))
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addContainerGap())
         );
@@ -267,7 +278,9 @@ public class Tablero extends javax.swing.JFrame {
                     .addComponent(jbtn_verLlaves)
                     .addComponent(jbtn_verRegistros)
                     .addComponent(jbtn_borrarContenido))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
+                .addComponent(jbtn_borrarContenido1)
+                .addContainerGap())
         );
 
         pack();
@@ -497,6 +510,11 @@ public class Tablero extends javax.swing.JFrame {
         } 
     }//GEN-LAST:event_jbtn_borrarContenidoActionPerformed
 
+    private void jbtn_simulacionDeChatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jbtn_simulacionDeChatActionPerformed
+        SimulacionDechat chat = new SimulacionDechat();
+        chat.setVisible(true);
+    }//GEN-LAST:event_jbtn_simulacionDeChatActionPerformed
+
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
@@ -536,6 +554,7 @@ public class Tablero extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JButton jbtn_borrar;
     private javax.swing.JButton jbtn_borrarContenido;
+    private javax.swing.JButton jbtn_borrarContenido1;
     private javax.swing.JButton jbtn_enviar;
     private javax.swing.JButton jbtn_filtrar;
     private javax.swing.JButton jbtn_limpiar;

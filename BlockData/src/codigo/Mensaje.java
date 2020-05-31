@@ -19,6 +19,10 @@ public final class Mensaje implements Serializable{
     private PrivateKey  llavePrivadaE, llavePrivadaR;
     private String hasAnterior;
     final private RSA rsa = new RSA(2048, 256);
+
+    public void setHasAnterior(String hasAnterior) {
+        this.hasAnterior = hasAnterior;
+    }
     
     public Mensaje(String msg){
         generarLlaves();
@@ -105,7 +109,8 @@ public final class Mensaje implements Serializable{
         String resultado = "Emissor: " + getLlavePublicaEmissor() +
                 "\tReceptor: " + getLlavepublicaReceptor() +
                 "\tMensage: " + mensageCifrado +
-                "\tFirmaDigital: " + FirmaDigital;
+                "\tFirma Digital: " + FirmaDigital +
+                "\tHash del Mensaje Anterior: " + hasAnterior;
         return resultado;
     }
     
@@ -140,6 +145,7 @@ public final class Mensaje implements Serializable{
         System.out.println("Firma del mensage   : " + getFirmaDigital());
         System.out.println("hash del mensage    : " + gethashMensage());
         System.out.println("firma descifrada    : " + getFirmaDigitalDecifrada());
+        System.out.println("Hash anterior       : " + hasAnterior());
         System.out.println((ComprobarMensage() ? "!Mensage correcto¡" : "!Mensage corrupto¡"));
     }
 
